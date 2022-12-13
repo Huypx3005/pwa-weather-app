@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { fetchWeather } from "./api/fetchWeather";
 
 import "./App.css";
 
 const App = () => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("Ha Noi");
   const [weather, setWeather] = useState({});
 
   const search = async (e) => {
@@ -14,10 +14,17 @@ const App = () => {
 
       setWeather(data);
       setQuery("");
-
-      console.log(data);
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      const data = await fetchWeather(query);
+
+      setWeather(data);
+      setQuery("");
+    })();
+  }, []);
 
   return (
     <div className="main-container">
@@ -27,7 +34,7 @@ const App = () => {
         placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={search}
+        onKeyDown={(e) => search(e)}
       />
       {weather.main && (
         <div className="city">
